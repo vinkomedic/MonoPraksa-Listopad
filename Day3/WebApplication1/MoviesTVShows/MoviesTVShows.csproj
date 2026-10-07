@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MoviesTVShows.Model\MoviesTVShows.Model.csproj" />
+    <ProjectReference Include="..\MoviesTVShows.Repository.Common\MoviesTVShows.Repository.Common.csproj" />
+    <ProjectReference Include="..\MoviesTVShows.Repository\MoviesTVShows.Repository.csproj" />
+    <ProjectReference Include="..\MoviesTVShows.Service.Common\MoviesTVShows.Service.Common.csproj" />
+    <ProjectReference Include="..\MoviesTVShows.Service\MoviesTVShows.Service.csproj" />
+  </ItemGroup>
+
+</Project>
