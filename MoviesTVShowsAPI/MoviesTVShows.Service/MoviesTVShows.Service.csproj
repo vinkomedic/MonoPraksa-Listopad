@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MoviesTVShows.Model\MoviesTVShows.Model.csproj" />
+    <ProjectReference Include="..\MoviesTVShows.Repository\MoviesTVShows.Repository.csproj" />
+    <ProjectReference Include="..\MoviesTVShows.Service.Common\MoviesTVShows.Service.Common.csproj" />
+  </ItemGroup>
+
+</Project>
