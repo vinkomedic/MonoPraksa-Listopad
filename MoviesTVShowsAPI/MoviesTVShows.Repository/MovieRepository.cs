@@ -15,16 +15,12 @@ public class MovieRepository : IMovieRepository
 
     public async Task<List<Movie>> GetAll()
     {
-        return await _context.Movies
-            .Include(movie => movie.Genre)
-            .ToListAsync();
+        return await _context.Movies.Include(movie => movie.Genre).ToListAsync();
     }
 
     public async Task<Movie?> GetById(Guid id)
     {
-        return await _context.Movies
-            .Include(movie => movie.Genre)
-            .FirstOrDefaultAsync(movie => movie.Id == id);
+        return await _context.Movies.Include(movie => movie.Genre).FirstOrDefaultAsync(movie => movie.Id == id);
     }
 
     public async Task Add(Movie movie)

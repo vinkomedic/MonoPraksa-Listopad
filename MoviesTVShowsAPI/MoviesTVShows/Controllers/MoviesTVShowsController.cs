@@ -2,6 +2,7 @@
 using MoviesTVShows.DTOs;
 using MoviesTVShows.Model;
 using MoviesTVShows.Service.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoviesTVShows.Controllers;
 
@@ -16,6 +17,7 @@ public class MoviesAndTVShowsController : ControllerBase
         _service = service;
     }
 
+    [Authorize]
     [HttpGet("Movies")]
     public async Task<IActionResult> GetMovies()
     {
@@ -34,6 +36,7 @@ public class MoviesAndTVShowsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpGet("Movies/{id}")]
     public async Task<IActionResult> GetMovieById(Guid id)
     {
@@ -57,6 +60,7 @@ public class MoviesAndTVShowsController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("Movies")]
     public async Task<IActionResult> AddMovie(MovieAdd input)
     {
@@ -89,6 +93,7 @@ public class MoviesAndTVShowsController : ControllerBase
         );
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("Movies/{id}")]
     public async Task<IActionResult> DeleteMovie(Guid id)
     {
