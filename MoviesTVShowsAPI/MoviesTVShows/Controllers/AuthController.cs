@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MoviesTVShows.DTOs;
-using MoviesTVShows.Service.Common;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using MoviesTVShows.DTOs;
+using MoviesTVShows.Model;
+using MoviesTVShows.Service;
+using MoviesTVShows.Service.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using MoviesTVShows.Model;
 
 namespace MoviesTVShows.Controllers;
 
@@ -13,33 +15,15 @@ namespace MoviesTVShows.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
+    private readonly ITokenService _tokenService;
     private readonly IAuthService _authService;
-    private readonly IConfiguration _configuration;
-
-    public AuthController(IAuthService authService, IConfiguration configuration)
+    public AuthController(IAuthService authService, ITokenService tokenService)
     {
         _authService = authService;
-        _configuration = configuration;
+        _tokenService = tokenService;
     }
 
-    private string CreateToken(User user)
-    {
-        var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Email, user.Email),
-        new Claim(ClaimTypes.Role, user.Role)
-    };
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-
-        var credentials = new SigningCredentials( key,SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddHours(1), signingCredentials: credentials);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
+    [AllowAnonymous]
     [HttpPost("Register")]
     public async Task<IActionResult> Register(RegisterRequest input)
     {
@@ -50,9 +34,10 @@ public class AuthController : ControllerBase
             return Conflict("User with that email already exists.");
         }
 
-        return Created("", new{input.Email, Role = "User" });
+        return Created("", new{input.Email, Role = Roles.User });
     }
 
+    [AllowAnonymous]
     [HttpPost("Login")]
     public async Task<IActionResult> Login(LoginRequest input)
     {
@@ -63,8 +48,13 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid email or password.");
         }
 
-        string token = CreateToken(user);
+        string token = _tokenService.CreateToken(user);
 
-        return Ok(new{token, email = user.Email, role = user.Role});
+        return Ok(new LoginResponse
+        {
+            Token = token,
+            Email = user.Email,
+            Role = user.Role
+        });
     }
 }

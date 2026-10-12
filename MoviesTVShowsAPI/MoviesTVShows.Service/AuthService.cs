@@ -31,7 +31,7 @@ namespace MoviesTVShows.Service
             var user = new User
             {
                 Email = email,
-                Role = "User"
+                Role = Roles.User
             };
 
             user.Passwordhash = _passwordHasher.HashPassword(user, password);

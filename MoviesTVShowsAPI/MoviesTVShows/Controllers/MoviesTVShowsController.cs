@@ -8,6 +8,7 @@ namespace MoviesTVShows.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class MoviesAndTVShowsController : ControllerBase
 {
     private readonly IMovieService _service;
@@ -60,7 +61,7 @@ public class MoviesAndTVShowsController : ControllerBase
         return Ok(response);
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [HttpPost("Movies")]
     public async Task<IActionResult> AddMovie(MovieAdd input)
     {
@@ -93,7 +94,7 @@ public class MoviesAndTVShowsController : ControllerBase
         );
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("Movies/{id}")]
     public async Task<IActionResult> DeleteMovie(Guid id)
     {
