@@ -1,8 +1,0 @@
-<Solution>
-  <Project Path="MoviesTVShows.Model/MoviesTVShows.Model.csproj" Id="a09265fd-3db9-4f06-85c9-1f96daaa8943" />
-  <Project Path="MoviesTVShows.Repository.Common/MoviesTVShows.Repository.Common.csproj" />
-  <Project Path="MoviesTVShows.Repository/MoviesTVShows.Repository.csproj" />
-  <Project Path="MoviesTVShows.Service.Common/MoviesTVShows.Service.Common.csproj" />
-  <Project Path="MoviesTVShows.Service/MoviesTVShows.Service.csproj" />
-  <Project Path="MoviesTVShows/MoviesTVShows.csproj" />
-</Solution>
