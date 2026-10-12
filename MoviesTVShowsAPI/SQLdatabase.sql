@@ -33,6 +33,15 @@ insert into genres (name) values
 
 select * from genres;
 select * from users;
+select * from movies;
+
+select email, count(*)
+from users
+group by email
+having count(*) > 1;
+
+alter table users
+add constraint users_email_key unique (email);
 
 update users
 set role = 'Admin'
@@ -44,7 +53,7 @@ insert into movies (title, year, rating, genreid, durationMin) values
 ('Deadpool 2', 2018, 7.5, (SELECT id FROM genres WHERE name = 'Action'), 119),
 ('Ted', 2012, 7.8,(SELECT id FROM genres WHERE name = 'Comedy'), 120);
 
-select * from movies;
+
 
 select * from movies where rating >= 8;
 
