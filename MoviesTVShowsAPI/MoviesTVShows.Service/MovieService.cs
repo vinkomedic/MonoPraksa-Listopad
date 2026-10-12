@@ -1,4 +1,5 @@
-﻿using MoviesTVShows.Model;
+﻿using Microsoft.Extensions.Logging;
+using MoviesTVShows.Model;
 using MoviesTVShows.Repository.Common;
 using MoviesTVShows.Service.Common;
 using MoviesTVShows.Service.Common.DTOs;
@@ -8,15 +9,20 @@ namespace MoviesTVShows.Service;
 public class MovieService : IMovieService
 {
     private readonly IMovieRepository _repository;
+    private readonly ILogger<MovieService> _logger;
 
-    public MovieService(IMovieRepository repository)
+    public MovieService(IMovieRepository repository, ILogger<MovieService> logger)
     {
         _repository = repository;
+        _logger = logger;
     }
 
     public async Task<List<MovieResponse>> GetAllMoviesAsync()
     {
+        _logger.LogInformation("Retrieving all movies.");
         var movies = await _repository.GetAllAsync();
+
+        _logger.LogInformation("Retrieved {MovieCount} movies.", movies.Count);
 
         return movies.Select(movie => new MovieResponse
         {

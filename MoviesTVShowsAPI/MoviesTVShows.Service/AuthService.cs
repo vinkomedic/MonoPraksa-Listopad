@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using MoviesTVShows.Model;
 using MoviesTVShows.Repository.Common;
 using MoviesTVShows.Service.Common;
 using MoviesTVShows.Service.Common.Exceptions;
+using MoviesTVShows.Service.Common.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MoviesTVShows.Service.Common.Exceptions;
 
 namespace MoviesTVShows.Service
 {
@@ -16,12 +17,14 @@ namespace MoviesTVShows.Service
         private readonly IPasswordHasher<User> _passwordHasher;
 
         private readonly ITokenService _tokenService;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher, ITokenService tokenService)
+        public AuthService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher, ITokenService tokenService, ILogger<AuthService> logger)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _tokenService = tokenService;
+            _logger = logger;
         }
 
         public async Task<bool> RegisterAsync(string email, string password)
@@ -52,6 +55,8 @@ namespace MoviesTVShows.Service
 
             if (user == null)
             {
+                _logger.LogWarning("Failed login attempt. User was not found.");
+
                 return null;
             }
 
@@ -59,6 +64,7 @@ namespace MoviesTVShows.Service
 
             if (result == PasswordVerificationResult.Failed)
             {
+                _logger.LogWarning("Failed login attempt for user {UserId}, wrong password.", user.Id);
                 return null;
             }
 

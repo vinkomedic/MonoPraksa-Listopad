@@ -17,7 +17,7 @@ public class MoviesAndTVShowsController : ControllerBase
     {
         _service = service;
     }
-
+    [AllowAnonymous]
     [HttpGet("Movies")]
     public async Task<IActionResult> GetMovies()
     {
@@ -26,7 +26,7 @@ public class MoviesAndTVShowsController : ControllerBase
         return Ok(movies);
     }
 
-
+    [AllowAnonymous]
     [HttpGet("Movies/{id}")]
     public async Task<IActionResult> GetMovieById(Guid id)
     {
