@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using MoviesTVShows.Model;
 using MoviesTVShows.Repository.Common;
 using MoviesTVShows.Service.Common;
+using MoviesTVShows.Service.Common.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using MoviesTVShows.Service.Common.Exceptions;
 
 namespace MoviesTVShows.Service
 {
@@ -13,10 +15,13 @@ namespace MoviesTVShows.Service
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher<User> _passwordHasher;
 
-        public AuthService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher)
+        private readonly ITokenService _tokenService;
+
+        public AuthService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher, ITokenService tokenService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _tokenService = tokenService;
         }
 
         public async Task<bool> RegisterAsync(string email, string password)
@@ -25,7 +30,7 @@ namespace MoviesTVShows.Service
 
             if (existingUser != null)
             {
-                return false;
+                throw new ConflictException("User with that email already exists.");
             }
 
             var user = new User
@@ -41,23 +46,30 @@ namespace MoviesTVShows.Service
             return true;
         }
 
-        public async Task<User?> LoginAsync(string email, string password)
+        public async Task<LoginResult?> LoginAsync(string email,string password)
         {
-            var user = await _userRepository.GetByEmailAsync(email);
+            var user =await _userRepository.GetByEmailAsync(email);
 
             if (user == null)
             {
                 return null;
             }
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.Passwordhash, password);
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Passwordhash,password);
 
             if (result == PasswordVerificationResult.Failed)
             {
                 return null;
             }
 
-            return user;
+            string token = _tokenService.CreateToken(user);
+
+            return new LoginResult
+            {
+                Token = token,
+                Email = user.Email,
+                Role = user.Role
+            };
         }
     }
 }

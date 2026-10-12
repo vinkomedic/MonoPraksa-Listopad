@@ -1,4 +1,4 @@
-namespace MoviesTVShows.DTOs;
+namespace MoviesTVShows.Service.Common.DTOs;
 
 public class MovieResponse
 {

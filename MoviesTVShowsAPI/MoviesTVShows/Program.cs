@@ -9,6 +9,7 @@ using MoviesTVShows.Service;
 using MoviesTVShows.Service.Common;
 using System.Security.Claims;
 using System.Text;
+using MoviesTVShows.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,7 +80,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 

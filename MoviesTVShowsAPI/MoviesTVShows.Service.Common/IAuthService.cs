@@ -9,6 +9,6 @@ namespace MoviesTVShows.Service.Common
     {
         Task<bool> RegisterAsync(string email, string password);
 
-        Task<User?> LoginAsync(string email, string password);
+        Task<LoginResult?> LoginAsync(string email, string password);
     }
 }

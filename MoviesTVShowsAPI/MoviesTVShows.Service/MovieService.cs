@@ -1,6 +1,7 @@
 ﻿using MoviesTVShows.Model;
 using MoviesTVShows.Repository.Common;
 using MoviesTVShows.Service.Common;
+using MoviesTVShows.Service.Common.DTOs;
 
 namespace MoviesTVShows.Service;
 
@@ -13,32 +14,57 @@ public class MovieService : IMovieService
         _repository = repository;
     }
 
-    public async Task<List<Movie>> GetAllMovies()
+    public async Task<List<MovieResponse>> GetAllMoviesAsync()
     {
-        return await _repository.GetAll();
+        var movies = await _repository.GetAllAsync();
+
+        return movies.Select(movie => new MovieResponse
+        {
+            Id = movie.Id,
+            Title = movie.Title,
+            Year = movie.Year,
+            Rating = movie.Rating,
+            Genre = movie.Genre?.Name,
+            Durationmin = movie.Durationmin
+        }).ToList();
     }
 
-    public async Task<Movie?> GetMovieById(Guid id)
+    public async Task<MovieResponse?> GetMovieByIdAsync(Guid id)
     {
-        return await _repository.GetById(id);
+        var movie = await _repository.GetByIdAsync(id);
+
+        if (movie == null)
+        {
+            return null;
+        }
+
+        return new MovieResponse
+        {
+            Id = movie.Id,
+            Title = movie.Title,
+            Year = movie.Year,
+            Rating = movie.Rating,
+            Genre = movie.Genre?.Name,
+            Durationmin = movie.Durationmin
+        };
     }
 
-    public async Task<Movie> AddMovie(Movie movie)
+    public async Task<Movie> AddMovieAsync(Movie movie)
     {
-        await _repository.Add(movie);
+        await _repository.AddAsync(movie);
         return movie;
     }
 
-    public async Task<bool> DeleteMovie(Guid id)
+    public async Task<bool> DeleteMovieAsync(Guid id)
     {
-        var movie = await _repository.GetById(id);
+        var movie = await _repository.GetByIdAsync(id);
 
         if (movie == null)
         {
             return false;
         }
 
-        await _repository.Delete(movie);
+        await _repository.DeleteAsync(movie);
         return true;
     }
 }

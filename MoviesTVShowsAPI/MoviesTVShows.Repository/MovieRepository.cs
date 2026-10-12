@@ -13,23 +13,23 @@ public class MovieRepository : IMovieRepository
         _context = context;
     }
 
-    public async Task<List<Movie>> GetAll()
+    public async Task<List<Movie>> GetAllAsync()
     {
         return await _context.Movies.Include(movie => movie.Genre).ToListAsync();
     }
 
-    public async Task<Movie?> GetById(Guid id)
+    public async Task<Movie?> GetByIdAsync(Guid id)
     {
         return await _context.Movies.Include(movie => movie.Genre).FirstOrDefaultAsync(movie => movie.Id == id);
     }
 
-    public async Task Add(Movie movie)
+    public async Task AddAsync(Movie movie)
     {
         await _context.Movies.AddAsync(movie);
         await _context.SaveChangesAsync();
     }
 
-    public async Task Delete(Movie movie)
+    public async Task DeleteAsync(Movie movie)
     {
         _context.Movies.Remove(movie);
         await _context.SaveChangesAsync();

@@ -1,11 +1,13 @@
 ﻿using MoviesTVShows.Model;
+using MoviesTVShows.Service.Common.DTOs;
 
 namespace MoviesTVShows.Service.Common;
 
 public interface IMovieService
 {
-    Task<List<Movie>> GetAllMovies();
-    Task<Movie?> GetMovieById(Guid id);
-    Task<Movie> AddMovie(Movie movie);
-    Task<bool> DeleteMovie(Guid id);
+    Task<List<MovieResponse>> GetAllMoviesAsync();
+    Task<MovieResponse?> GetMovieByIdAsync(Guid id);
+
+    Task<Movie> AddMovieAsync(Movie movie);
+    Task<bool> DeleteMovieAsync(Guid id);
 }

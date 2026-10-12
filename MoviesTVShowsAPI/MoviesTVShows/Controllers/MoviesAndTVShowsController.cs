@@ -4,7 +4,7 @@ using MoviesTVShows.Model;
 using MoviesTVShows.Service.Common;
 using Microsoft.AspNetCore.Authorization;
 
-namespace MoviesTVShows.Controllers;
+namespace MoviesAndTVShows.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -18,54 +18,33 @@ public class MoviesAndTVShowsController : ControllerBase
         _service = service;
     }
 
-    [Authorize]
     [HttpGet("Movies")]
     public async Task<IActionResult> GetMovies()
     {
-        var movies = await _service.GetAllMovies();
+        var movies = await _service.GetAllMoviesAsync();
 
-        var response = movies.Select(movie => new MovieResponse
-        {
-            Id = movie.Id,
-            Title = movie.Title,
-            Year = movie.Year,
-            Rating = movie.Rating,
-            Genre = movie.Genre?.Name,
-            Durationmin = movie.Durationmin
-        }).ToList();
-
-        return Ok(response);
+        return Ok(movies);
     }
 
-    [Authorize]
+
     [HttpGet("Movies/{id}")]
     public async Task<IActionResult> GetMovieById(Guid id)
     {
-        var movie = await _service.GetMovieById(id);
+        var movie = await _service.GetMovieByIdAsync(id);
 
         if (movie == null)
         {
             return NotFound();
         }
 
-        var response = new MovieResponse
-        {
-            Id = movie.Id,
-            Title = movie.Title,
-            Year = movie.Year,
-            Rating = movie.Rating,
-            Genre = movie.Genre?.Name,
-            Durationmin = movie.Durationmin
-        };
-
-        return Ok(response);
+        return Ok(movie);
     }
 
     [Authorize(Roles = Roles.Admin)]
     [HttpPost("Movies")]
     public async Task<IActionResult> AddMovie(MovieAdd input)
     {
-        var movie = new Movie
+        Movie movie = new Movie
         {
             Title = input.Title,
             Year = input.Year,
@@ -74,18 +53,11 @@ public class MoviesAndTVShowsController : ControllerBase
             Durationmin = input.Durationmin
         };
 
-        var addedMovie = await _service.AddMovie(movie);
-        var movieFromDatabase = await _service.GetMovieById(addedMovie.Id);
+        Movie addedMovie =
+            await _service.AddMovieAsync(movie);
 
-        var response = new MovieResponse
-        {
-            Id = movieFromDatabase!.Id,
-            Title = movieFromDatabase.Title,
-            Year = movieFromDatabase.Year,
-            Rating = movieFromDatabase.Rating,
-            Genre = movieFromDatabase.Genre?.Name,
-            Durationmin = movieFromDatabase.Durationmin
-        };
+        var response =
+            await _service.GetMovieByIdAsync(addedMovie.Id);
 
         return CreatedAtAction(
             nameof(GetMovieById),
@@ -98,7 +70,7 @@ public class MoviesAndTVShowsController : ControllerBase
     [HttpDelete("Movies/{id}")]
     public async Task<IActionResult> DeleteMovie(Guid id)
     {
-        bool deleted = await _service.DeleteMovie(id);
+        bool deleted = await _service.DeleteMovieAsync(id);
 
         if (!deleted)
         {

@@ -15,12 +15,10 @@ namespace MoviesTVShows.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly ITokenService _tokenService;
-    private readonly IAuthService _authService;
-    public AuthController(IAuthService authService, ITokenService tokenService)
+     private readonly IAuthService _authService;
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
-        _tokenService = tokenService;
     }
 
     [AllowAnonymous]
@@ -41,20 +39,13 @@ public class AuthController : ControllerBase
     [HttpPost("Login")]
     public async Task<IActionResult> Login(LoginRequest input)
     {
-        var user = await _authService.LoginAsync(input.Email,input.Password);
+        var result = await _authService.LoginAsync(input.Email,input.Password);
 
-        if (user == null)
+        if (result == null)
         {
             return Unauthorized("Invalid email or password.");
         }
 
-        string token = _tokenService.CreateToken(user);
-
-        return Ok(new LoginResponse
-        {
-            Token = token,
-            Email = user.Email,
-            Role = user.Role
-        });
+        return Ok(result);
     }
 }
