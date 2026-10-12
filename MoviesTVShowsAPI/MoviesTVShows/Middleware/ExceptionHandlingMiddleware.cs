@@ -14,13 +14,13 @@ public class ExceptionHandlingMiddleware
         _logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext context) // catch for every unexpected exception
+    public async Task InvokeAsync(HttpContext context) 
     {
         try
         {
             await _next(context);
         }
-        catch (ConflictException ex)
+        catch (ConflictException ex) // catch if user with that mail already exists
         {
             _logger.LogWarning(ex, ex.Message);
 
@@ -32,7 +32,7 @@ public class ExceptionHandlingMiddleware
                 message = ex.Message
             });
         }
-        catch (Exception ex)
+        catch (Exception ex) // catch for every unexpected exception
         {
             _logger.LogError(ex, "An unexpected error occurred.");
 
