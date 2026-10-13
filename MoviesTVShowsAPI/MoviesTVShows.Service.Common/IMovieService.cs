@@ -8,6 +8,6 @@ public interface IMovieService
     Task<List<MovieResponse>> GetAllMoviesAsync();
     Task<MovieResponse?> GetMovieByIdAsync(Guid id);
 
-    Task<Movie> AddMovieAsync(Movie movie);
     Task<bool> DeleteMovieAsync(Guid id);
+    Task<MovieResponse> AddMovieAsync(MovieAdd input);
 }

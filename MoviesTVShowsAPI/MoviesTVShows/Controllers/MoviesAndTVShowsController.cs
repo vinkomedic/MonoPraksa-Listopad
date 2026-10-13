@@ -3,6 +3,7 @@ using MoviesTVShows.DTOs;
 using MoviesTVShows.Model;
 using MoviesTVShows.Service.Common;
 using Microsoft.AspNetCore.Authorization;
+using MoviesTVShows.Service.Common.DTOs;
 
 namespace MoviesAndTVShows.Controllers;
 
@@ -44,26 +45,9 @@ public class MoviesAndTVShowsController : ControllerBase
     [HttpPost("Movies")]
     public async Task<IActionResult> AddMovie(MovieAdd input)
     {
-        Movie movie = new Movie
-        {
-            Title = input.Title,
-            Year = input.Year,
-            Rating = input.Rating,
-            Genreid = input.Genreid,
-            Durationmin = input.Durationmin
-        };
+        var response = await _service.AddMovieAsync(input);
 
-        Movie addedMovie =
-            await _service.AddMovieAsync(movie);
-
-        var response =
-            await _service.GetMovieByIdAsync(addedMovie.Id);
-
-        return CreatedAtAction(
-            nameof(GetMovieById),
-            new { id = addedMovie.Id },
-            response
-        );
+        return CreatedAtAction(nameof(GetMovieById), new { id = response.Id }, response);
     }
 
     [Authorize(Roles = Roles.Admin)]

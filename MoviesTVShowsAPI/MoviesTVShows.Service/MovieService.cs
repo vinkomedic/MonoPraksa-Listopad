@@ -9,9 +9,17 @@ public class MovieService : IMovieService
 {
     private readonly IMovieRepository _repository;
 
-    public MovieService(IMovieRepository repository)
+    public MovieResponse MapToResponse(Movie movie)
     {
-        _repository = repository;
+        return new MovieResponse
+        {
+            Id = movie.Id,
+            Title = movie.Title,
+            Year = movie.Year,
+            Rating = movie.Rating,
+            Genre = movie.Genre?.Name,
+            Durationmin = movie.Durationmin
+        };
     }
 
     public async Task<List<MovieResponse>> GetAllMoviesAsync()
@@ -49,10 +57,29 @@ public class MovieService : IMovieService
         };
     }
 
-    public async Task<Movie> AddMovieAsync(Movie movie)
+    public async Task<MovieResponse> AddMovieAsync(MovieAdd input)
     {
+        var movie = new Movie
+        {
+            Title = input.Title,
+            Year = input.Year,
+            Rating = input.Rating,
+            Genreid = input.Genreid,
+            Durationmin = input.Durationmin
+        };
+
         await _repository.AddAsync(movie);
-        return movie;
+
+        var addedMovie = await _repository.GetByIdAsync(movie.Id);
+
+        if (addedMovie == null)
+        {
+            throw new InvalidOperationException(
+                "Movie could not be retrieved after creation."
+            );
+        }
+
+        return MapToResponse(addedMovie);
     }
 
     public async Task<bool> DeleteMovieAsync(Guid id)
